@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>타이머</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #87CEEB; /* 하늘색으로 변경 */
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header .date {
+            font-size: 2em; /* index.html과 동일하게 2em으로 확대 */
+            font-weight: bold;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        #stopwatch-display {
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            color: #333;
+            font-family: monospace;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls button {
+            padding: 12px 30px;
+            margin: 0;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .controls button:hover {
+            background-color: #444;
+        }
+
+        .controls input {
+            padding: 10px;
+            font-size: 1.1em;
+            margin: 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        #alarm-date-input, #alarm-time-input {
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .stopwatch-section, .alarm-section {
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .stopwatch-section {
+            margin-bottom: 120px;
+        }
+
+        .alarm-section {
+            margin-bottom: 60px;
+        }
+
+        #alarm-list {
+            list-style: none;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        #alarm-list li {
+            font-size: 1.2em;
+            padding: 10px;
+            margin: 5px 0;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #alarm-list li button {
+            padding: 5px 10px;
+            font-size: 0.9em;
+            margin-left: 5px;
+            background-color: #555;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        #alarm-list li button:hover {
+            background-color: #666;
+        }
+
+        #alarm-list li button.edit {
+            background-color: #007bff;
+        }
+
+        #alarm-list li button.edit:hover {
+            background-color: #0056b3;
+        }
+
+        #alarm-list li button.delete {
+            background-color: #dc3545;
+        }
+
+        #alarm-list li button.delete:hover {
+            background-color: #b02a37;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            border-top: 1px solid #ddd; /* index.html과 동일하게 #ddd로 변경 */
+            z-index: 1000;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: space-around; /* index.html과 동일하게 space-around로 변경 */
+            align-items: center;
+            padding: 0; /* 오른쪽 여백 제거 */
+            max-width: 100%; /* 전체 너비 사용 */
+            margin: 0 auto;
+        }
+
+        nav ul li {
+            flex: 1; /* index.html과 동일하게 flex: 1로 변경 */
+            text-align: center;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.85em;
+            display: block;
+            padding: 10px;
+            transition: background-color 0.2s;
+        }
+
+        nav ul li a:hover {
+            color: #ddd;
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="date">4.11 (금)</div>
+    </header>
+    <main>
+        <div class="stopwatch-section">
+            <h2>스톱워치</h2>
+            <div id="stopwatch-display">00:00:00</div>
+            <div class="controls">
+                <button onclick="startStopwatch()">시작</button>
+                <button onclick="stopStopwatch()">정지</button>
+                <button onclick="resetStopwatch()">리셋</button>
+            </div>
+        </div>
+
+        <div class="alarm-section">
+            <h2>알람</h2>
+            <div class="controls">
+                <input type="date" id="alarm-date-input">
+                <input type="time" id="alarm-time-input">
+                <button onclick="setAlarm()">알람 설정</button>
+                <button onclick="cancelAllAlarms()">모든 알람 취소</button>
+            </div>
+            <ul id="alarm-list"></ul>
+        </div>
+    </main>
+    <nav>
+        <ul>
+            <li><a href="/index.html" id="home-link">홈</a></li>
+            <li><a href="/do/timer.html" id="timer-link">타이머</a></li>
+            <li><a href="/do/schedule.html" id="schedule-link">일정</a></li>
+            <li><a href="/mypage/mypage.html" id="mypage-link">마이페이지</a></li>
+        </ul>
+    </nav>
+
+    <script>
+        // Stopwatch Functionality
+        let stopwatchInterval = null;
+        let stopwatchSeconds = 0;
+
+        function updateStopwatchDisplay() {
+            let hours = Math.floor(stopwatchSeconds / 3600);
+            let minutes = Math.floor((stopwatchSeconds % 3600) / 60);
+            let seconds = stopwatchSeconds % 60;
+            document.getElementById("stopwatch-display").textContent = 
+                `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        }
+
+        function startStopwatch() {
+            if (!stopwatchInterval) {
+                stopwatchInterval = setInterval(() => {
+                    stopwatchSeconds++;
+                    updateStopwatchDisplay();
+                }, 1000);
+            }
+        }
+
+        function stopStopwatch() {
+            clearInterval(stopwatchInterval);
+            stopwatchInterval = null;
+        }
+
+        function resetStopwatch() {
+            stopStopwatch();
+            stopwatchSeconds = 0;
+            updateStopwatchDisplay();
+        }
+
+        // Alarm Functionality
+        let alarmIntervals = [];
+        let editingAlarmTime = null;
+
+        function updateAlarmList() {
+            let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+            alarms.sort((a, b) => a.time - b.time);
+            let alarmList = document.getElementById("alarm-list");
+            alarmList.innerHTML = "";
+            alarms.forEach(alarm => {
+                let li = document.createElement("li");
+                let date = new Date(alarm.time);
+                let year = date.getFullYear();
+                let month = (date.getMonth() + 1).toString().padStart(2, "0");
+                let day = date.getDate().toString().padStart(2, "0");
+                let hours = date.getHours().toString().padStart(2, "0");
+                let minutes = date.getMinutes().toString().padStart(2, "0");
+                li.textContent = `${year}-${month}-${day} ${hours}:${minutes}`;
+
+                let editButton = document.createElement("button");
+                editButton.textContent = "수정";
+                editButton.className = "edit";
+                editButton.onclick = () => editAlarm(alarm.time);
+
+                let deleteButton = document.createElement("button");
+                deleteButton.textContent = "삭제";
+                deleteButton.className = "delete";
+                deleteButton.onclick = () => deleteAlarm(alarm.time);
+
+                li.appendChild(editButton);
+                li.appendChild(deleteButton);
+                alarmList.appendChild(li);
+            });
+        }
+
+        function setAlarm() {
+            let dateInput = document.getElementById("alarm-date-input").value;
+            let timeInput = document.getElementById("alarm-time-input").value;
+
+            if (!dateInput || !timeInput) {
+                alert("날짜와 시간을 모두 선택하세요.");
+                return;
+            }
+
+            let [year, month, day] = dateInput.split("-");
+            let [hours, minutes] = timeInput.split(":");
+            let alarmTime = new Date(year, month - 1, day, hours, minutes, 0);
+
+            let now = new Date();
+            if (alarmTime <= now) {
+                alert("현재 시간 이후의 날짜와 시간을 선택하세요.");
+                return;
+            }
+
+            let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+
+            if (alarms.some(alarm => alarm.time === alarmTime.getTime())) {
+                alert("동일한 시간의 알람이 존재합니다.");
+                return;
+            }
+
+            if (editingAlarmTime !== null) {
+                alarms = alarms.filter(a => a.time !== editingAlarmTime);
+                editingAlarmTime = null;
+            }
+
+            alarms.push({ time: alarmTime.getTime() });
+            localStorage.setItem("alarms", JSON.stringify(alarms));
+            localStorage.setItem("alarmSchedule", `${year}-${month}-${day} ${hours}:${minutes} 알람`);
+            localStorage.setItem("alarmTime", alarmTime.getTime());
+
+            let interval = setInterval(() => {
+                let currentTime = new Date();
+                if (currentTime >= alarmTime) {
+                    alert("알람 시간입니다!");
+                    let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+                    alarms = alarms.filter(a => a.time !== alarmTime.getTime());
+                    localStorage.setItem("alarms", JSON.stringify(alarms));
+                    localStorage.removeItem("alarmTime");
+                    clearInterval(interval);
+                    alarmIntervals = alarmIntervals.filter(i => i !== interval);
+                    updateAlarmList();
+                }
+            }, 1000);
+            alarmIntervals.push(interval);
+
+            document.getElementById("alarm-date-input").value = "";
+            document.getElementById("alarm-time-input").value = "";
+            updateAlarmList();
+        }
+
+        function editAlarm(time) {
+            let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+            let alarm = alarms.find(a => a.time === time);
+            if (alarm) {
+                let date = new Date(alarm.time);
+                let year = date.getFullYear();
+                let month = (date.getMonth() + 1).toString().padStart(2, "0");
+                let day = date.getDate().toString().padStart(2, "0");
+                let hours = date.getHours().toString().padStart(2, "0");
+                let minutes = date.getMinutes().toString().padStart(2, "0");
+
+                document.getElementById("alarm-date-input").value = `${year}-${month}-${day}`;
+                document.getElementById("alarm-time-input").value = `${hours}:${minutes}`;
+                editingAlarmTime = time;
+
+                let interval = alarmIntervals.find(i => {
+                    let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+                    return alarms.some(a => a.time === time);
+                });
+                if (interval) {
+                    clearInterval(interval);
+                    alarmIntervals = alarmIntervals.filter(i => i !== interval);
+                }
+            }
+        }
+
+        function deleteAlarm(time) {
+            let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+            alarms = alarms.filter(a => a.time !== time);
+            localStorage.setItem("alarms", JSON.stringify(alarms));
+
+            let interval = alarmIntervals.find(i => {
+                let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+                return !alarms.some(a => a.time === time);
+            });
+            if (interval) {
+                clearInterval(interval);
+                alarmIntervals = alarmIntervals.filter(i => i !== interval);
+            }
+
+            if (alarms.length === 0) {
+                localStorage.removeItem("alarmSchedule");
+                localStorage.removeItem("alarmTime");
+            } else {
+                let earliestAlarm = alarms.reduce((min, curr) => curr.time < min.time ? curr : min);
+                let date = new Date(earliestAlarm.time);
+                let year = date.getFullYear();
+                let month = (date.getMonth() + 1).toString().padStart(2, "0");
+                let day = date.getDate().toString().padStart(2, "0");
+                let hours = date.getHours().toString().padStart(2, "0");
+                let minutes = date.getMinutes().toString().padStart(2, "0");
+                localStorage.setItem("alarmSchedule", `${year}-${month}-${day} ${hours}:${minutes} 알람`);
+                localStorage.setItem("alarmTime", earliestAlarm.time);
+            }
+
+            updateAlarmList();
+        }
+
+        function cancelAllAlarms() {
+            alarmIntervals.forEach(interval => clearInterval(interval));
+            alarmIntervals = [];
+            localStorage.removeItem("alarms");
+            localStorage.removeItem("alarmSchedule");
+            localStorage.removeItem("alarmTime");
+            document.getElementById("alarm-date-input").value = "";
+            document.getElementById("alarm-time-input").value = "";
+            updateAlarmList();
+        }
+
+        window.onload = function() {
+            let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+            alarms.forEach(alarm => {
+                let alarmTime = new Date(alarm.time);
+                let now = new Date();
+                if (alarmTime > now) {
+                    let interval = setInterval(() => {
+                        let currentTime = new Date();
+                        if (currentTime >= alarmTime) {
+                            alert("알람 시간입니다!");
+                            let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+                            alarms = alarms.filter(a => a.time !== alarmTime.getTime());
+                            localStorage.setItem("alarms", JSON.stringify(alarms));
+                            localStorage.removeItem("alarmTime");
+                            clearInterval(interval);
+                            alarmIntervals = alarmIntervals.filter(i => i !== interval);
+                            updateAlarmList();
+                        }
+                    }, 1000);
+                    alarmIntervals.push(interval);
+                } else {
+                    alarms = alarms.filter(a => a.time !== alarmTime.getTime());
+                    localStorage.setItem("alarms", JSON.stringify(alarms));
+                }
+            });
+            updateAlarmList();
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>home page</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #87CEEB;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header .date {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main h1 {
+            font-size: 2em;
+            margin-bottom: 20px;
+        }
+
+        main ul {
+            list-style: none;
+        }
+
+        main ul li {
+            font-size: 1em;
+            margin: 10px 0;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            max-width: 350px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        main ul li.alarm-item {
+            letter-spacing: 0.1em;
+        }
+
+        #timer-display {
+            font-size: 6em;
+            margin-bottom: 20px;
+            color: #333;
+            font-family: monospace;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid #ddd;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        nav ul li {
+            flex: 1;
+            text-align: center;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.85em;
+            display: block;
+            padding: 10px;
+            transition: background-color 0.2s;
+        }
+
+        nav ul li a:hover {
+            color: #ddd;
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="date"></div>
+    </header>
+    <main>
+        <div id="timer-display">00:00:00</div>
+        <br><br><br>
+        <h1>오늘의 일정</h1>
+        <br><br><br>
+        <ul id="schedule-list">
+        </ul>
+    </main>
+    <nav>
+        <ul>
+            <li><a href="/index.html" id="home-link">홈</a></li>
+            <li><a href="/do/timer.html" id="timer-link">타이머</a></li>
+            <li><a href="/do/schedule.html" id="schedule-link">일정</a></li>
+            <li><a href="/mypage/mypage.html" id="mypage-link">마이페이지</a></li>
+        </ul>
+    </nav>
+
+    <script>
+        // 현재 날짜를 "YYYY.M.D (요일)" 형식으로 표시
+        function updateDateDisplay() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+            const weekday = weekdays[now.getDay()];
+            document.querySelector('.date').textContent = `${year}.${month}.${day} (${weekday})`;
+        }
+
+        // 시간을 "HH:MM:SS" 형식으로 포맷
+        function formatTime(hours, minutes, seconds) {
+            return `${hours.toString().padStart(2, "0")}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+        }
+
+        // 현재 시각을 표시
+        function updateCurrentTimeDisplay() {
+            const now = new Date();
+            const hours = now.getHours();
+            const minutes = now.getMinutes();
+            const seconds = now.getSeconds();
+            document.getElementById("timer-display").textContent = formatTime(hours, minutes, seconds);
+        }
+
+        // 오늘의 알람과 일정 목록 업데이트
+        function updateScheduleList() {
+            let scheduleList = document.getElementById("schedule-list");
+            scheduleList.innerHTML = "";
+
+            let now = new Date();
+            let todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+            let todayEnd = todayStart + 24 * 60 * 60 * 1000 - 1;
+
+            // timer.html에서 가져온 오늘의 알람
+            let alarms = JSON.parse(localStorage.getItem("alarms") || "[]");
+            let todayAlarms = alarms.filter(alarm => alarm.time >= todayStart && alarm.time <= todayEnd);
+
+            // schedule.html에서 가져온 오늘의 일정
+            let schedules = JSON.parse(localStorage.getItem("schedules") || "[]");
+            let todaySchedules = schedules.filter(schedule => schedule.time >= todayStart && schedule.time <= todayEnd);
+
+            // 알람과 일정 합치기 및 시간순 정렬
+            let allItems = [
+                ...todayAlarms.map(alarm => ({ time: alarm.time, desc: "알람" })),
+                ...todaySchedules
+            ].sort((a, b) => a.time - b.time);
+
+            if (allItems.length > 0) {
+                allItems.forEach(item => {
+                    let time = new Date(item.time);
+                    let year = time.getFullYear();
+                    let month = (time.getMonth() + 1).toString().padStart(2, "0");
+                    let day = time.getDate().toString().padStart(2, "0");
+                    let hours = time.getHours().toString().padStart(2, "0");
+                    let minutes = time.getMinutes().toString().padStart(2, "0");
+
+                    let alarmItem = document.createElement("li");
+                    alarmItem.className = "alarm-item";
+                    alarmItem.textContent = `${year}-${month}-${day} ${hours}:${minutes} - ${item.desc}`;
+                    scheduleList.appendChild(alarmItem);
+                });
+            } else {
+                let noScheduleItem = document.createElement("li");
+                noScheduleItem.textContent = "등록된 오늘의 일정은 없습니다";
+                noScheduleItem.style.color = "#777";
+                scheduleList.appendChild(noScheduleItem);
+            }
+        }
+
+        window.onload = function() {
+            updateDateDisplay();
+            updateScheduleList();
+            updateCurrentTimeDisplay();
+            setInterval(updateCurrentTimeDisplay, 1000);
+        };
+    </script>
+</body>
+</html>

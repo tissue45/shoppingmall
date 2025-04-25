@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>일정</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: #87CEEB;
+            padding: 20px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+
+        header .date {
+            font-size: 2em;
+            font-weight: bold;
+        }
+
+        main {
+            flex: 1;
+            padding: 20px;
+            text-align: center;
+        }
+
+        main h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+        }
+
+        .schedule-add-section {
+            width: 100%;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+            margin-bottom: 60px;
+        }
+
+        .controls {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .controls input, .controls textarea {
+            padding: 10px;
+            font-size: 1.1em;
+            margin: 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .controls textarea {
+            max-width: 300px;
+            resize: vertical;
+        }
+
+        .controls button {
+            padding: 12px 30px;
+            margin: 0;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            max-width: 200px;
+        }
+
+        .controls button:hover {
+            background-color: #444;
+        }
+
+        nav {
+            background-color: #333;
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid #ddd;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0;
+            max-width: 100%;
+            margin: 0;
+        }
+
+        nav ul li {
+            flex: 1;
+            text-align: center;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.85em;
+            display: block;
+            padding: 10px;
+            transition: background-color 0.2s;
+        }
+
+        nav ul li a:hover {
+            color: #ddd;
+            background-color: #444;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="date"></div>
+    </header>
+    <main>
+        <div class="schedule-add-section">
+            <h2>일정 추가</h2>
+            <div class="controls">
+                <input type="date" id="schedule-date-input">
+                <input type="time" id="schedule-time-input">
+                <textarea id="schedule-desc-input" placeholder="일정 설명" rows="3"></textarea>
+                <button onclick="addSchedule()">일정 추가</button>
+            </div>
+        </div>
+    </main>
+    <nav>
+        <ul>
+            <li><a href="/index.html" id="home-link">홈</a></li>
+            <li><a href="/do/timer.html" id="timer-link">타이머</a></li>
+            <li><a href="/do/schedule.html" id="schedule-link">일정</a></li>
+            <li><a href="/mypage/mypage.html" id="mypage-link">마이페이지</a></li>
+        </ul>
+    </nav>
+
+    <script>
+        // 현재 날짜를 "YYYY.M.D (요일)" 형식으로 표시
+        function updateDateDisplay() {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = now.getMonth() + 1;
+            const day = now.getDate();
+            const weekdays = ['일', '월', '화', '수', '목', '금', '토'];
+            const weekday = weekdays[now.getDay()];
+            document.querySelector('.date').textContent = `${year}.${month}.${day} (${weekday})`;
+        }
+
+        // 일정 추가
+        function addSchedule() {
+            let dateInput = document.getElementById("schedule-date-input").value;
+            let timeInput = document.getElementById("schedule-time-input").value;
+            let descInput = document.getElementById("schedule-desc-input").value.trim();
+
+            if (!dateInput || !timeInput || !descInput) {
+                alert("날짜, 시간, 설명을 모두 입력하세요.");
+                return;
+            }
+
+            let [year, month, day] = dateInput.split("-");
+            let [hours, minutes] = timeInput.split(":");
+            let scheduleTime = new Date(year, month - 1, day, hours, minutes, 0).getTime();
+
+            let schedules = JSON.parse(localStorage.getItem("schedules") || "[]");
+            schedules.push({ time: scheduleTime, desc: descInput });
+            localStorage.setItem("schedules", JSON.stringify(schedules));
+
+            document.getElementById("schedule-date-input").value = "";
+            document.getElementById("schedule-time-input").value = "";
+            document.getElementById("schedule-desc-input").value = "";
+        }
+
+        window.onload = function() {
+            updateDateDisplay();
+        };
+    </script>
+</body>
+</html>
