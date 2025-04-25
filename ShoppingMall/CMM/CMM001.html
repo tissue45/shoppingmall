@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Page (CMM001)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px; /* 모바일 화면 크기 기준 */
+            border: 1px solid #000;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            width: 100%;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-icons a {
+            text-decoration: none;
+            color: #000;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .category-section {
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            width: 100%;
+            height: calc(100vh - 60px - 60px); /* 헤더(60px) + 네비게이션 바(60px) 제외 */
+            overflow-y: auto; /* 카테고리가 많아질 경우 스크롤 가능 */
+            padding: 5px 5px; /* 상단 5px, 양 옆 5px 여백 */
+        }
+
+        .category {
+            width: 100%; /* 가로 1열 */
+            border: 1px solid #ccc;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: calc((100vh - 60px - 60px - 35px - 50px + 20px) / 5); /* 나머지 5개 카테고리 높이 조정 */
+            text-align: center;
+            font-size: 16px;
+            margin-bottom: 5px; /* 카테고리 간 5px 간격 */
+            text-decoration: none; /* 링크 스타일 제거 */
+            color: #000;
+        }
+
+        .category:hover {
+            background-color: #f5f5f5; /* 호버 시 배경색 변경 */
+        }
+
+        .category:last-child {
+            margin-bottom: 5px; /* 마지막 카테고리에도 5px 간격 추가 */
+        }
+
+        .category.search-bar {
+            height: 50px; /* 검색창 높이 설정 */
+            display: flex;
+            justify-content: space-between; /* 텍스트와 아이콘을 양 끝으로 배치 */
+            align-items: center;
+            padding: 0 15px; /* 좌우 패딩 */
+            text-decoration: none;
+            color: #000;
+            background-color: #fff; /* 스크린샷과 유사한 배경색 */
+        }
+
+        .category.search-bar:hover {
+            background-color: #f5f5f5; /* 호버 시 배경색 변경 */
+        }
+
+        .search-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .nav-bar {
+            width: 100%;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            font-size: 12px;
+        }
+
+        .nav-button span {
+            font-size: 24px; /* 아이콘 크기 */
+        }
+
+        .nav-button:hover {
+            color: #007bff; /* 호버 시 색상 변경 */
+        }
+
+        .nav-button.active {
+            color: #007bff; /* 활성화된 버튼 색상 */
+        }
+    </style>
+</head>
+<body data-screen-id="CMM001">
+    <div class="container">
+        <div class="header">
+            <div class="logo">너는 무슨 톤?</div>
+            <div class="header-icons">
+                <a href="ALM001.html" title="알림">🔔</a>
+                <a href="BUY001.html" title="장바구니">🛒</a>
+                <a href="SET001.html" title="설정">⚙️</a>
+            </div>
+        </div>
+        <div class="category-section">
+            <a href="SER003.html" class="category search-bar">
+                <span>게시물 검색</span>
+                <span class="search-icon">🔍</span>
+            </a>
+            <a href="CMM002.html" class="category">인기게시물<br>(좋아요 30개 이상 받은 게시물)</a>
+            <a href="CMM003.html" class="category">자유 게시판</a>
+            <a href="CMM004.html" class="category">코디 추천 게시판</a>
+            <a href="CMM005.html" class="category">화장품 추천 게시판</a>
+            <a href="CMM006.html" class="category">내가 쓴 글</a>
+        </div>
+        <div class="nav-bar">
+            <a href="/HOM/HOM001.html" class="nav-button">
+                <span>🏠</span>
+                홈
+            </a>
+            <a href="/CMM/CMM001.html" class="nav-button active">
+                <span>💬</span>
+                게시판
+            </a>
+            <a href="/LUV/LUV001.html" class="nav-button">
+                <span>❤️</span>
+                찜 목록
+            </a>
+            <a href="/MYP/MYP001.html" class="nav-button">
+                <span>👤</span>
+                마이페이지
+            </a>
+        </div>
+    </div>
+</body>
+</html>

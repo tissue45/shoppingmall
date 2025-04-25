@@ -1,0 +1,382 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wireframe Layout with Adjusted Category Spacing</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px; /* 모바일 화면 크기 기준 */
+            border: 1px solid #000;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            width: 100%;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-icons a {
+            text-decoration: none;
+            color: #000;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .search-bar {
+            width: 100%;
+            border: 1px solid #ccc;
+            background-color: #fff;
+            height: 50px;
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 0 15px;
+            text-decoration: none;
+            color: #000;
+        }
+
+        .search-bar:hover {
+            background-color: #f5f5f5;
+        }
+
+        .search-icon {
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .banner {
+            width: 100%;
+            border: 1px solid #ccc;
+            height: calc((100vh - 170px) / 2);
+            position: relative;
+            overflow: hidden;
+            background-color: #d3d3d3; /* 회색 배경 */
+        }
+
+        .banner-slides {
+            display: flex;
+            width: 500%; /* 5개의 광고 */
+            height: 100%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .banner-slide {
+            width: 20%; /* 100% / 5 */
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            color: #fff;
+            text-align: center;
+            text-decoration: none; /* 링크 스타일 제거 */
+        }
+
+        .banner-slide:hover {
+            background-color: rgba(0, 0, 0, 0.1); /* 호버 시 약간 어두워짐 */
+        }
+
+        .banner-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 30px;
+            color: #000;
+            cursor: pointer;
+            user-select: none;
+            z-index: 10; /* 화살표가 링크 위에 표시되도록 */
+        }
+
+        .banner-arrow.left {
+            left: 10px;
+        }
+
+        .banner-arrow.right {
+            right: 10px;
+        }
+
+        .banner-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10; /* 도트가 링크 위에 표시되도록 */
+        }
+
+        .banner-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #bbb;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .banner-dot.active {
+            background-color: #000;
+        }
+
+        .category-section {
+            display: flex;
+            flex-wrap: wrap;
+            width: 100%;
+            height: calc((100vh - 170px) / 2);
+        }
+
+        .category {
+            width: 50%;
+            border: 1px solid #ccc;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .icon-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        .icon {
+            border: 1px solid #999;
+            width: 80px;
+            height: 80px;
+            line-height: 80px;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .nav-bar {
+            width: 100%;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            font-size: 12px;
+        }
+
+        .nav-button span {
+            font-size: 24px; /* 아이콘 크기 */
+        }
+
+        .nav-button:hover {
+            color: #007bff; /* 호버 시 색상 변경 */
+        }
+
+        .nav-button.active {
+            color: #007bff; /* 활성화된 버튼 색상 */
+        }
+    </style>
+</head>
+
+<body data-screen-id="HOM001">
+    <div class="container">
+        <div class="header">
+            <div class="logo">너는 무슨 톤?</div>
+            <div class="header-icons">
+                <a href="ALM001.html" title="알림">🔔</a>
+                <a href="BUY001.html" title="장바구니">🛒</a>
+                <a href="SET001.html" title="설정">⚙️</a>
+            </div>
+        </div>
+        <a href="SER002.html" class="search-bar">
+            <span class="search-icon">🔍</span>
+        </a>
+        <div class="banner">
+            <div class="banner-slides">
+                <a href="https://www.naver.com" target="_blank" class="banner-slide">
+                    <img src="/Images/adv/clo1.jpg" alt="Banner 1">
+                </a>
+                <a href="https://www.naver.com" target="_blank" class="banner-slide">
+                    <img src="/Images/adv/clo2.jpg" alt="Banner 2">
+                </a>
+                <a href="https://www.naver.com" target="_blank" class="banner-slide">
+                    <img src="/Images/adv/clo3.jpg" alt="Banner 3">
+                </a>
+                <a href="https://www.naver.com" target="_blank" class="banner-slide">
+                    <img src="/Images/adv/clo4.jpg" alt="Banner 4">
+                </a>
+                <a href="https://www.naver.com" target="_blank" class="banner-slide">
+                    <img src="/Images/adv/clo5.jpg" alt="Banner 5">
+                </a>
+            </div>
+            <div class="banner-arrow left">&#9665;</div>
+            <div class="banner-arrow right">&#9655;</div>
+            <div class="banner-dots">
+                <span class="banner-dot active" data-index="0"></span>
+                <span class="banner-dot" data-index="1"></span>
+                <span class="banner-dot" data-index="2"></span>
+                <span class="banner-dot" data-index="3"></span>
+                <span class="banner-dot" data-index="4"></span>
+            </div>
+        </div>
+        <div class="category-section">
+            <div class="category">
+                봄 웜톤
+                <div class="icon-container">
+                    <a href="/SPR/SPR001.html" class="icon">옷</a>
+                    <a href="/SPR/SPR002.html" class="icon">화장품</a>
+                </div>
+            </div>
+            <div class="category">
+                여름 쿨톤
+                <div class="icon-container">
+                    <a href="/SPR/SMR001.html" class="icon">옷</a>
+                    <a href="/SPR/SMR002.html" class="icon">화장품</a>
+                </div>
+            </div>
+            <div class="category">
+                가을 웜톤
+                <div class="icon-container">
+                    <a href="/FAl/FAL001.html" class="icon">옷</a>
+                    <a href="/FAl/FAL002.html" class="icon">화장품</a>
+                </div>
+            </div>
+            <div class="category">
+                겨울 쿨톤
+                <div class="icon-container">
+                    <a href="/WIN/WIN001.html" class="icon">옷</a>
+                    <a href="/WIN/WIN002.html" class="icon">화장품</a>
+                </div>
+            </div>
+        </div>
+        <div class="nav-bar">
+            <a href="/HOM/HOM001.html" class="nav-button active">
+                <span>🏠</span>
+                홈
+            </a>
+            <a href="/CMM/CMM001.html" class="nav-button">
+                <span>💬</span>
+                게시판
+            </a>
+            <a href="/LUV/LUV001.html" class="nav-button">
+                <span>❤️</span>
+                찜 목록
+            </a>
+            <a href="/MYP/MYP001.html" class="nav-button">
+                <span>👤</span>
+                마이페이지
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelector('.banner-slides');
+        const dots = document.querySelectorAll('.banner-dot');
+        const leftArrow = document.querySelector('.banner-arrow.left');
+        const rightArrow = document.querySelector('.banner-arrow.right');
+        let currentIndex = 0;
+        const totalSlides = 5;
+        let autoSlideInterval;
+
+        // 슬라이드 이동 함수
+        function goToSlide(index) {
+            currentIndex = index;
+            if (currentIndex >= totalSlides) currentIndex = 0;
+            if (currentIndex < 0) currentIndex = totalSlides - 1;
+            slides.style.transform = `translateX(-${currentIndex * 20}%)`;
+            updateDots();
+        }
+
+        // 도트 업데이트 함수
+        function updateDots() {
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[currentIndex].classList.add('active');
+        }
+
+        // 자동 슬라이드 함수
+        function startAutoSlide() {
+            autoSlideInterval = setInterval(() => {
+                goToSlide(currentIndex + 1);
+            }, 5000); // 5초마다 이동
+        }
+
+        // 자동 슬라이드 멈춤 함수
+        function stopAutoSlide() {
+            clearInterval(autoSlideInterval);
+        }
+
+        // 화살표 클릭 이벤트
+        leftArrow.addEventListener('click', (e) => {
+            e.preventDefault(); // 링크 이동 방지
+            e.stopPropagation(); // 이벤트 전파 방지
+            stopAutoSlide();
+            goToSlide(currentIndex - 1);
+            startAutoSlide();
+        });
+
+        rightArrow.addEventListener('click', (e) => {
+            e.preventDefault(); // 링크 이동 방지
+            e.stopPropagation(); // 이벤트 전파 방지
+            stopAutoSlide();
+            goToSlide(currentIndex + 1);
+            startAutoSlide();
+        });
+
+        // 도트 클릭 이벤트
+        dots.forEach(dot => {
+            dot.addEventListener('click', (e) => {
+                e.preventDefault(); // 링크 이동 방지
+                e.stopPropagation(); // 이벤트 전파 방지
+                stopAutoSlide();
+                goToSlide(parseInt(dot.getAttribute('data-index')));
+                startAutoSlide();
+            });
+        });
+
+        // 초기 설정
+        goToSlide(0);
+        startAutoSlide();
+    </script>
+</body>
+</html>

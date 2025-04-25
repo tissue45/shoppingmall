@@ -1,0 +1,302 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites Page (LUV001)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px; /* 모바일 화면 크기 기준 */
+            border: 1px solid #000;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            width: 100%;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            height: 60px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 15px;
+        }
+
+        .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .header-icons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .header-icons a {
+            text-decoration: none;
+            color: #000;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .category-section {
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            width: 100%;
+            height: calc(100vh - 60px - 60px); /* 헤더(60px) + 네비게이션 바(60px) 제외 */
+            overflow-y: auto; /* 카테고리가 많아질 경우 스크롤 가능 */
+            padding: 5px 5px; /* 상단 5px, 양 옆 5px 여백 */
+            justify-content: center; /* 수직 중앙 정렬 */
+            align-items: center; /* 수평 중앙 정렬 */
+        }
+
+        .category-item {
+            display: flex;
+            flex-direction: column; /* 세로 정렬 */
+            margin-bottom: 50px; /* 카테고리 간 50px 간격 */
+            width: 100%; /* 전체 너비 유지 */
+        }
+
+        .category-item:last-child {
+            margin-bottom: 50px; /* 마지막 카테고리에도 50px 간격 추가 */
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between; /* 카테고리와 버튼을 양 끝으로 배치 */
+            align-items: center;
+            margin-bottom: 3px; /* 아이콘 박스와 3px 간격 */
+        }
+
+        .category {
+            border: 1px solid #ccc;
+            padding: 5px 10px; /* 작은 패딩 */
+            background-color: #fff; /* 배경색 흰색 */
+            font-size: 14px; /* 작은 글씨 */
+            width: fit-content; /* 내용에 맞는 너비 */
+        }
+
+        .add-button {
+            width: 24px; /* 버튼 크기 */
+            height: 24px; /* 버튼 크기 */
+            background-color: #007bff; /* 버튼 배경색 */
+            color: #fff; /* 버튼 텍스트 색상 */
+            border: none;
+            font-size: 20px; /* + 크기 유지 */
+            line-height: 24px; /* 수직 중앙 정렬 */
+            text-align: center;
+            text-decoration: none; /* 링크 스타일 제거 */
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            background-color: #0056b3; /* 호버 시 색상 변경 */
+        }
+
+        .carousel-container {
+            position: relative;
+            width: 100%;
+            height: 115px; /* Icon과 같은 높이 */
+            overflow: hidden; /* 넘치는 부분 숨김 */
+        }
+
+        .carousel {
+            display: flex;
+            width: max-content; /* 모든 아이템을 한 줄로 나열 */
+            height: 100%;
+            transition: transform 0.3s ease; /* 부드러운 스크롤 애니메이션 */
+            gap: 5px; /* 아이템 사이 5px 간격 */
+        }
+
+        .carousel-item {
+            border: 1px solid #999;
+            width: 115px; /* 정사각형 너비 */
+            height: 115px; /* 정사각형 높이 */
+            line-height: 115px; /* 수직 중앙 정렬 */
+            text-align: center;
+            font-size: 12px;
+            flex-shrink: 0; /* 크기 고정 */
+        }
+
+        .arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 30px;
+            height: 30px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            font-size: 20px;
+            line-height: 30px;
+            text-align: center;
+            cursor: pointer;
+            z-index: 1; /* 화살표가 아이템 위에 표시되도록 */
+        }
+
+        .arrow:hover {
+            background-color: #0056b3;
+        }
+
+        .arrow-left {
+            left: 5px;
+        }
+
+        .arrow-right {
+            right: 5px;
+        }
+
+        .nav-bar {
+            width: 100%;
+            border: 1px solid #ccc;
+            background-color: #f0f0f0;
+            height: 60px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #000;
+            font-size: 12px;
+        }
+
+        .nav-button span {
+            font-size: 24px; /* 아이콘 크기 */
+        }
+
+        .nav-button:hover {
+            color: #007bff; /* 호버 시 색상 변경 */
+        }
+
+        .nav-button.active {
+            color: #007bff; /* 활성화된 버튼 색상 */
+        }
+    </style>
+</head>
+<body data-screen-id="LUV001">
+    <div class="container">
+        <div class="header">
+            <div class="logo">너는 무슨 톤?</div>
+            <div class="header-icons">
+                <a href="ALM001.html" title="알림">🔔</a>
+                <a href="BUY001.html" title="장바구니">🛒</a>
+                <a href="SET001.html" title="설정">⚙️</a>
+            </div>
+        </div>
+        <div class="category-section">
+            <div class="category-item">
+                <div class="category-header">
+                    <div class="category">옷</div>
+                    <a href="LUV002.html" class="add-button">+</a>
+                </div>
+                <div class="carousel-container">
+                    <button class="arrow arrow-left" onclick="scrollCarousel('carousel1', 115)">◀</button>
+                    <div class="carousel" id="carousel1">
+                        <div class="carousel-item">Cloth1</div>
+                        <div class="carousel-item">Cloth2</div>
+                        <div class="carousel-item">Cloth3</div>
+                        <div class="carousel-item">Cloth4</div>
+                        <div class="carousel-item">Cloth5</div>
+                    </div>
+                    <button class="arrow arrow-right" onclick="scrollCarousel('carousel1', -115)">▶</button>
+                </div>
+            </div>
+            <div class="category-item">
+                <div class="category-header">
+                    <div class="category">화장품</div>
+                    <a href="LUV003.html" class="add-button">+</a>
+                </div>
+                <div class="carousel-container">
+                    <button class="arrow arrow-left" onclick="scrollCarousel('carousel2', 115)">◀</button>
+                    <div class="carousel" id="carousel2">
+                        <div class="carousel-item">Cosmetic1</div>
+                        <div class="carousel-item">Cosmetic2</div>
+                        <div class="carousel-item">Cosmetic3</div>
+                        <div class="carousel-item">Cosmetic4</div>
+                        <div class="carousel-item">Cosmetic5</div>
+                    </div>
+                    <button class="arrow arrow-right" onclick="scrollCarousel('carousel2', -115)">▶</button>
+                </div>
+            </div>
+            <div class="category-item">
+                <div class="category-header">
+                    <div class="category">최근 본 상품</div>
+                    <a href="LUV004.html" class="add-button">+</a>
+                </div>
+                <div class="carousel-container">
+                    <button class="arrow arrow-left" onclick="scrollCarousel('carousel3', 115)">◀</button>
+                    <div class="carousel" id="carousel3">
+                        <div class="carousel-item">Item1</div>
+                        <div class="carousel-item">Item2</div>
+                        <div class="carousel-item">Item3</div>
+                        <div class="carousel-item">Item4</div>
+                        <div class="carousel-item">Item5</div>
+                    </div>
+                    <button class="arrow arrow-right" onclick="scrollCarousel('carousel3', -115)">▶</button>
+                </div>
+            </div>
+        </div>
+        <div class="nav-bar">
+            <a href="/HOM/HOM001.html" class="nav-button">
+                <span>🏠</span>
+                홈
+            </a>
+            <a href="/CMM/CMM001.html" class="nav-button">
+                <span>💬</span>
+                게시판
+            </a>
+            <a href="/LUV/LUV001.html" class="nav-button active">
+                <span>❤️</span>
+                찜 목록
+            </a>
+            <a href="/MYP/MYP001.html" class="nav-button">
+                <span>👤</span>
+                마이페이지
+            </a>
+        </div>
+    </div>
+
+    <script>
+        function scrollCarousel(carouselId, distance) {
+            const carousel = document.getElementById(carouselId);
+            const currentTransform = carousel.style.transform || 'translateX(0px)';
+            const currentTranslateX = parseInt(currentTransform.match(/-?\d+/)[0]) || 0;
+            const newTranslateX = currentTranslateX + distance;
+
+            // 스크롤 범위 제한
+            const maxTranslateX = 0; // 가장 왼쪽
+            const minTranslateX = -(carousel.scrollWidth - carousel.parentElement.clientWidth); // 가장 오른쪽
+            if (newTranslateX > maxTranslateX) {
+                carousel.style.transform = `translateX(${maxTranslateX}px)`;
+            } else if (newTranslateX < minTranslateX) {
+                carousel.style.transform = `translateX(${minTranslateX}px)`;
+            } else {
+                carousel.style.transform = `translateX(${newTranslateX}px)`;
+            }
+        }
+    </script>
+</body>
+</html>
